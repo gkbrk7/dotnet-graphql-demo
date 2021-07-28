@@ -2,6 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Cosmonaut;
+using Cosmonaut.Extensions.Microsoft.DependencyInjection;
+using GraphQLSampleAPI.Data.Entities;
+using GraphQLSampleAPI.Data.Interfaces;
+using GraphQLSampleAPI.Data.Repositories;
+using GraphQLSampleAPI.Models;
 using GraphQLSampleAPI.ObjectTypes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +33,12 @@ namespace GraphQLSampleAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var settings = new CosmosStoreSettings("Test", "https://localhost:8081", "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==");
+            services.AddCosmosStore<Car>(settings);
+
+            services.AddTransient(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
+            services.AddTransient<ICosmosCarRepository, CosmosCarRepositoryAsync>();
+
             services.AddGraphQLServer()
                 .AddQueryType<QueryObjectType>();
             services.AddControllers();
