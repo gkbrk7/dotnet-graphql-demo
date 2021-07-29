@@ -1,29 +1,29 @@
+using System;
 using System.Collections.Generic;
-using GraphQLSampleAPI.Data.Entities;
+using System.Linq;
+using System.Threading.Tasks;
+using Cosmonaut.Extensions;
+using GraphQLSampleAPI.Models;
+using GraphQLSampleAPI.UnitOfWorkPattern;
+using HotChocolate;
 
 namespace GraphQLSampleAPI.CoreSchema
 {
     public class Query
     {
-        public Gadget FirstGadget()
+        public async Task<Gadget> FirstGadget([Service] IUnitOfWork unitOfWork)
         {
-            return new Gadget
-            {
-                Id = 1,
-                BrandName = "Samsung",
-                ProductName = "Samsung S10",
-                Cost = 9000,
-                Type = "Phone"
-            };
+            return (await unitOfWork.CosmosGadgetRepository.GetAll()).FirstOrDefault();
         }
 
-        public IEnumerable<Gadget> Gadgets()
+        public async Task<IEnumerable<Gadget>> Gadgets([Service] IUnitOfWork unitOfWork)
         {
-            return new List<Gadget>{
-                new Gadget{Id = 1, BrandName = "Samsung", ProductName = "Samsung S10", Cost = 9000, Type = "Phone"},
-                new Gadget{Id = 2, BrandName = "Apple", ProductName = "IPhone 11", Cost = 11500, Type = "Phone"},
-                new Gadget{Id = 3, BrandName = "Huawei", ProductName = "Mate Pro", Cost = 10000, Type = "Phone"},
-            };
+            return await unitOfWork.CosmosGadgetRepository.GetAll();
+        }
+
+        public async Task<IEnumerable<Gadget>> GetByBrands(string brand, [Service] IUnitOfWork unitOfWork)
+        {
+            return await unitOfWork.CosmosGadgetRepository.Find(x => x.brandName.ToLower() == brand.ToLower());
         }
     }
 }

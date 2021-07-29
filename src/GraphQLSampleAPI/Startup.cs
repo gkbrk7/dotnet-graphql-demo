@@ -4,15 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Cosmonaut;
 using Cosmonaut.Extensions.Microsoft.DependencyInjection;
-using GraphQLSampleAPI.Data.Entities;
 using GraphQLSampleAPI.Data.Interfaces;
 using GraphQLSampleAPI.Data.Repositories;
 using GraphQLSampleAPI.Models;
 using GraphQLSampleAPI.ObjectTypes;
+using GraphQLSampleAPI.UnitOfWorkPattern;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -35,12 +36,17 @@ namespace GraphQLSampleAPI
         {
             var settings = new CosmosStoreSettings("Test", "https://localhost:8081", "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==");
             services.AddCosmosStore<Car>(settings);
+            services.AddCosmosStore<Gadget>(settings);
 
             services.AddTransient(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
             services.AddTransient<ICosmosCarRepository, CosmosCarRepositoryAsync>();
+            services.AddTransient<ICosmosGadgetRepository, CosmosGadgetRepositoryAsync>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             services.AddGraphQLServer()
                 .AddQueryType<QueryObjectType>();
+
+            // services.AddPooledDbContextFactory<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

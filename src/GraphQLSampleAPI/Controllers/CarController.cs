@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GraphQLSampleAPI.Data.Interfaces;
 using GraphQLSampleAPI.Models;
+using GraphQLSampleAPI.UnitOfWorkPattern;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -14,9 +15,11 @@ namespace GraphQLSampleAPI.Controllers
     public class CarController : ControllerBase
     {
         private readonly ICosmosCarRepository cosmosCarRepository;
+        private readonly IUnitOfWork unitOfWork;
 
-        public CarController(ICosmosCarRepository cosmosCarRepository)
+        public CarController(ICosmosCarRepository cosmosCarRepository, IUnitOfWork unitOfWork)
         {
+            this.unitOfWork = unitOfWork;
             this.cosmosCarRepository = cosmosCarRepository;
         }
 
@@ -33,9 +36,9 @@ namespace GraphQLSampleAPI.Controllers
         }
 
         [HttpPost("AddCar")]
-        public async Task<IActionResult> AddCar(Car car)
+        public async Task<IActionResult> AddCar(Gadget car)
         {
-            var response = await cosmosCarRepository.Add(car);
+            var response = await unitOfWork.CosmosGadgetRepository.Add(car);
             return Ok(response);
         }
         // [HttpPut]

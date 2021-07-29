@@ -1,4 +1,4 @@
-using GraphQLSampleAPI.Data.Entities;
+using GraphQLSampleAPI.Models;
 using HotChocolate.Types;
 
 namespace GraphQLSampleAPI.ObjectTypes
@@ -7,11 +7,11 @@ namespace GraphQLSampleAPI.ObjectTypes
     {
         protected override void Configure(IObjectTypeDescriptor<Gadget> descriptor)
         {
-            descriptor.Field(_ => _.Id).Type<IntType>().Name("Id");
-            descriptor.Field(_ => _.ProductName).Type<StringType>().Name("ProductName");
-            descriptor.Field(_ => _.BrandName).Type<StringType>().Name("BrandName");
-            descriptor.Field(_ => _.Cost).Type<DecimalType>().Name("Cost");
-            descriptor.Field(_ => _.Type).Type<StringType>().Name("Type");
+            descriptor.Field(_ => _.id).Type<StringType>().Name("Id");
+            descriptor.Field(_ => _.productName).Type<StringType>().Name("ProductName");
+            descriptor.Field(_ => _.brandName).Type<StringType>().Name("BrandName");
+            descriptor.Field(_ => _.cost).Type<DecimalType>().Name("Cost");
+            descriptor.Field(_ => _.type).Type<StringType>().Name("Type");
         }
     }
 }
