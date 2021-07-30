@@ -6,6 +6,7 @@ using Cosmonaut;
 using Cosmonaut.Extensions.Microsoft.DependencyInjection;
 using GraphQLSampleAPI.Data.Interfaces;
 using GraphQLSampleAPI.Data.Repositories;
+using GraphQLSampleAPI.DataLoader;
 using GraphQLSampleAPI.Models;
 using GraphQLSampleAPI.ObjectTypes;
 using GraphQLSampleAPI.UnitOfWorkPattern;
@@ -44,7 +45,9 @@ namespace GraphQLSampleAPI
             services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             services.AddGraphQLServer()
-                .AddQueryType<QueryObjectType>();
+                .AddQueryType<QueryObjectType>()
+                .AddMutationType<MutationObjectType>()
+                .AddDataLoader<GadgetsByBrandDataLoader>();
 
             // services.AddPooledDbContextFactory<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();

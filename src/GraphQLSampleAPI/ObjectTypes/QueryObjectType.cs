@@ -7,9 +7,10 @@ namespace GraphQLSampleAPI.ObjectTypes
     {
         protected override void Configure(IObjectTypeDescriptor<Query> descriptor)
         {
-            descriptor.Field(_ => _.FirstGadget(default)).Type<GadgetObjectType>().Name("firstGadget");
-            descriptor.Field(_ => _.Gadgets(default)).Type<ListType<GadgetObjectType>>().Name("allGadgets");
-            descriptor.Field(_ => _.GetByBrands(default, default)).Type<ListType<GadgetObjectType>>().Name("allGadgetsByBrand");
+            descriptor.Field(_ => _.FirstGadget()).Type<GadgetObjectType>().Name("firstGadget");
+            descriptor.Field(_ => _.Gadgets()).Type<ListType<GadgetObjectType>>().Name("allGadgets");
+            descriptor.Field(_ => _.GetByBrands(default)).Type<ListType<GadgetObjectType>>().Name("allGadgetsByBrand");
+            descriptor.Field(_ => _.GetByBrandsLoader(default, default, default)).Type<ListType<GadgetObjectType>>().Name("brandFilterLoader");
         }
     }
 }
