@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/GraphQLSampleAPI/bin/Debug/net5.0/GraphQLSampleAPI.dll",
+            "program": "${workspaceFolder}/src/bin/Debug/net5.0/GraphQLSampleAPI.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/GraphQLSampleAPI",
             "stopAtEntry": false,
@@ -30,6 +30,6 @@
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach"
-        }
+        },
     ]
 }
