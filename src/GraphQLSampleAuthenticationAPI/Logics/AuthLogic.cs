@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -82,7 +83,7 @@ namespace GraphQLSampleAuthenticationAPI.Logics
 
             var claims = new List<Claim>();
             claims.Add(new Claim("LastName", user.LastName));
-            claims.Add(new Claim("Email", user.EmailAddress));
+            claims.Add(new Claim(ClaimTypes.Email, user.EmailAddress));
 
             if ((userRoles?.Count ?? 0) > 0)
             {
@@ -101,6 +102,80 @@ namespace GraphQLSampleAuthenticationAPI.Logics
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using (var generator = RandomNumberGenerator.Create())
+            {
+                generator.GetBytes(randomNumber);
+                return Convert.ToBase64String(randomNumber);
+            }
+        }
+
+        private ClaimsPrincipal GetClaimsFromExpiredJwtToken(string expiredToken)
+        {
+            var tokenValidationParams = new TokenValidationParameters
+            {
+                ValidIssuer = tokenSettings.Issuer,
+                ValidateIssuer = true,
+                ValidAudience = tokenSettings.Audience,
+                ValidateAudience = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings.Key)),
+                ValidateLifetime = false
+            };
+
+            var jwtHandler = new JwtSecurityTokenHandler();
+            var principal = jwtHandler.ValidateToken(expiredToken, tokenValidationParams, out SecurityToken securityToken);
+
+            var jwtToken = securityToken as JwtSecurityToken;
+            if (jwtToken == null)
+                return null;
+
+            return principal;
+        }
+
+        public TokenResponseModel RenewToken(RenewTokenInputType renewToken)
+        {
+            var result = new TokenResponseModel { Message = "Success" };
+
+            var claimsPrincipal = GetClaimsFromExpiredJwtToken(renewToken.AccessToken);
+
+            if (claimsPrincipal == null)
+            {
+                result.Message = "Invalid Tokens";
+                return result;
+            }
+
+            string email = claimsPrincipal.Claims.Where(_ => _.Type == ClaimTypes.Email).Select(_ => _.Value).FirstOrDefault();
+
+            if (string.IsNullOrEmpty(email))
+            {
+                result.Message = "Invalid Tokens";
+                return result;
+            }
+
+            var user = _authContext.Users.Where(_ => _.EmailAddress == email && _.RefreshToken == renewToken.RefreshToken && _.RefreshTokenExpiration > DateTime.Now).FirstOrDefault();
+
+            if (user == null)
+            {
+                result.Message = "Invalid Tokens";
+                return result;
+            }
+
+            var roles = _authContext.UserRoles.Where(_ => _.UserId == user.UserId).ToList();
+
+            result.AccessToken = GetAuthToken(user, roles);
+            result.RefreshToken = GenerateRefreshToken();
+
+            user.RefreshToken = result.RefreshToken;
+            user.RefreshTokenExpiration = DateTime.Now.AddDays(7);
+
+            _authContext.SaveChanges();
+
+            return result;
         }
 
         public string Register(RegisterInputType registerInput)
@@ -135,20 +210,38 @@ namespace GraphQLSampleAuthenticationAPI.Logics
             return "Registration successful!";
         }
 
-        public string Login(LoginInputType loginInput)
+        public TokenResponseModel Login(LoginInputType loginInput)
         {
+            var result = new TokenResponseModel { Message = "Success" };
+
             if (string.IsNullOrEmpty(loginInput.Email) || string.IsNullOrEmpty(loginInput.Password))
-                return "Invalid Credentials";
+            {
+                result.Message = "Invalid Credentials";
+                return result;
+            }
 
             var user = _authContext.Users.Where(_ => _.EmailAddress == loginInput.Email).FirstOrDefault();
             if (user == null)
-                return "User Not Found";
+            {
+                result.Message = "User Not Found";
+                return result;
+            }
 
             if (!ValidatePasswordHash(loginInput.Password, user.Password))
-                return "Invalid Credentials";
+            {
+                result.Message = "Invalid Credentials";
+                return result;
+            }
 
             var userRoles = _authContext.UserRoles.Where(_ => _.UserId == user.UserId).ToList();
-            return GetAuthToken(user, userRoles);
+            result.AccessToken = GetAuthToken(user, userRoles);
+            result.RefreshToken = GenerateRefreshToken();
+
+            user.RefreshToken = result.RefreshToken;
+            user.RefreshTokenExpiration = DateTime.Now.AddDays(7);
+            _authContext.SaveChanges();
+
+            return result;
 
         }
     }

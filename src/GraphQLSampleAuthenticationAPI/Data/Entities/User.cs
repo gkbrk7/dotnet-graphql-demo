@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace GraphQLSampleAuthenticationAPI.Data.Entities
@@ -11,6 +12,6 @@ namespace GraphQLSampleAuthenticationAPI.Data.Entities
         public string EmailAddress { get; set; }
         public string Password { get; set; }
         public string RefreshToken { get; set; }
-        public string RefreshTokenExpiration { get; set; }
+        public DateTime? RefreshTokenExpiration { get; set; }
     }
 }

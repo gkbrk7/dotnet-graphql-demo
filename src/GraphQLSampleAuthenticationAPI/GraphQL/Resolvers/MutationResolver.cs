@@ -1,5 +1,6 @@
 ﻿using GraphQLSampleAuthenticationAPI.InputTypes;
 using GraphQLSampleAuthenticationAPI.Logics;
+using GraphQLSampleAuthenticationAPI.Models;
 using HotChocolate;
 using System;
 using System.Collections.Generic;
@@ -15,9 +16,14 @@ namespace GraphQLSampleAuthenticationAPI.GraphQL.Resolvers
             return authlogic.Register(registerInput);
         }
 
-        public string Login([Service] IAuthLogic authLogic, LoginInputType loginInput)
+        public TokenResponseModel Login([Service] IAuthLogic authLogic, LoginInputType loginInput)
         {
             return authLogic.Login(loginInput);
+        }
+
+        public TokenResponseModel RenewToken([Service] IAuthLogic authLogic, RenewTokenInputType renewTokenInput)
+        {
+            return authLogic.RenewToken(renewTokenInput);
         }
     }
 }

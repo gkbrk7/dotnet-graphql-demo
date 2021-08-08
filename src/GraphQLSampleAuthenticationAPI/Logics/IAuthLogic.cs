@@ -1,4 +1,5 @@
 ﻿using GraphQLSampleAuthenticationAPI.InputTypes;
+using GraphQLSampleAuthenticationAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace GraphQLSampleAuthenticationAPI.Logics
     public interface IAuthLogic
     {
         string Register(RegisterInputType registerInput);
-        string Login(LoginInputType loginInput);
+        TokenResponseModel Login(LoginInputType loginInput);
+        TokenResponseModel RenewToken(RenewTokenInputType renewToken);
     }
 }

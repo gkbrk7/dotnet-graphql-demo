@@ -69,7 +69,8 @@ namespace GraphQLSampleAuthenticationAPI
                             ValidAudience = tokenSettings.Audience,
                             ValidateAudience = true,
                             ValidateIssuerSigningKey = true,
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings.Key))
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings.Key)),
+                            ClockSkew = TimeSpan.Zero //Add to test token expiration below 5 minutes
                         };
                     });
 
