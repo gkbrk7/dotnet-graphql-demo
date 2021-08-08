@@ -2,25 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GraphQLSampleAuthenticationAPI.Data;
-using GraphQLSampleAuthenticationAPI.GraphQL.CoreSchemas;
-using GraphQLSampleAuthenticationAPI.GraphQL.Models.ObjectTypes;
-using GraphQLSampleAuthenticationAPI.GraphQL.Resolvers;
-using GraphQLSampleAuthenticationAPI.Logics;
-using GraphQLSampleAuthenticationAPI.Models;
+using GraphQLSampleSplitAPI.MutationResolvers;
+using GraphQLSampleSplitAPI.MutationTypeExtensions;
+using GraphQLSampleSplitAPI.QueryResolvers;
+using GraphQLSampleSplitAPI.TypeExtensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
-namespace GraphQLSampleAuthenticationAPI
+namespace GraphQLSampleSplitAPI
 {
     public class Startup
     {
@@ -38,20 +34,16 @@ namespace GraphQLSampleAuthenticationAPI
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "GraphQLSampleAuthenticationAPI", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "GraphQLSampleSplitAPI", Version = "v1" });
             });
 
-            services.AddScoped<IAuthLogic, AuthLogic>();
-            services.Configure<TokenSettings>(Configuration.GetSection("TokenSettings"));
-
             services.AddGraphQLServer()
-                         .AddQueryType<QueryResolver>()
-                         .AddMutationType<MutationResolver>();
-            //.AddMutationType<MutationObjectType>()
-            //.AddQueryType<QueryObjectType>();
-            services.AddDbContextPool<AuthContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AuthContext")));
-
-
+                .AddQueryType(_ => _.Name("Query"))
+                    .AddType<CountryTypeExtension>()
+                    .AddType<PetQueryResolver>()
+                .AddMutationType(_ => _.Name("Mutation"))
+                    .AddType<CountryMutationTypeExtension>()
+                    .AddType<PetMutationResolver>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,7 +53,7 @@ namespace GraphQLSampleAuthenticationAPI
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GraphQLSampleAuthenticationAPI v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GraphQLSampleSplitAPI v1"));
             }
 
             app.UseHttpsRedirection();
