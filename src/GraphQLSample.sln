@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphQLSampleAuthentication
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphQLSampleSplitAPI", "GraphQLSampleSplitAPI\GraphQLSampleSplitAPI.csproj", "{7DD2AAA7-EB0D-4ADB-A7EA-60A2BA6F161C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphQLSampleSubscriptionsDemoAPI", "GraphQLSampleSubscriptionsDemoAPI\GraphQLSampleSubscriptionsDemoAPI.csproj", "{A33FC155-F095-44DE-88E9-17B67445A020}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{7DD2AAA7-EB0D-4ADB-A7EA-60A2BA6F161C}.Release|x64.Build.0 = Release|Any CPU
 		{7DD2AAA7-EB0D-4ADB-A7EA-60A2BA6F161C}.Release|x86.ActiveCfg = Release|Any CPU
 		{7DD2AAA7-EB0D-4ADB-A7EA-60A2BA6F161C}.Release|x86.Build.0 = Release|Any CPU
+		{A33FC155-F095-44DE-88E9-17B67445A020}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A33FC155-F095-44DE-88E9-17B67445A020}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A33FC155-F095-44DE-88E9-17B67445A020}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A33FC155-F095-44DE-88E9-17B67445A020}.Debug|x64.Build.0 = Debug|Any CPU
+		{A33FC155-F095-44DE-88E9-17B67445A020}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A33FC155-F095-44DE-88E9-17B67445A020}.Debug|x86.Build.0 = Debug|Any CPU
+		{A33FC155-F095-44DE-88E9-17B67445A020}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A33FC155-F095-44DE-88E9-17B67445A020}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A33FC155-F095-44DE-88E9-17B67445A020}.Release|x64.ActiveCfg = Release|Any CPU
+		{A33FC155-F095-44DE-88E9-17B67445A020}.Release|x64.Build.0 = Release|Any CPU
+		{A33FC155-F095-44DE-88E9-17B67445A020}.Release|x86.ActiveCfg = Release|Any CPU
+		{A33FC155-F095-44DE-88E9-17B67445A020}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -3,6 +3,7 @@ using GraphQLSampleAuthenticationAPI.Data.Entities;
 using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Data;
+using HotChocolate.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,8 @@ namespace GraphQLSampleAuthenticationAPI.GraphQL.Resolvers
             return user;
         }
 
+        //[UseOffsetPaging(DefaultPageSize = 10, IncludeTotalCount = true, MaxPageSize = 50)]
+        [UsePaging]
         [UseFiltering]
         [UseSorting]
         public IQueryable<User> AllUsers([Service] AuthContext authContext)
