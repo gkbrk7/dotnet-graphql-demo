@@ -94,7 +94,7 @@ namespace GraphQLSampleAuthenticationAPI.Logics
 
             var token = new JwtSecurityToken(
                 issuer: tokenSettings.Issuer,
-                audience: tokenSettings.Issuer,
+                audience: tokenSettings.Audience,
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(20),
                 signingCredentials: credentials
